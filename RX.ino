@@ -41,8 +41,8 @@ void loop()
         msg += _radioData.y1;
         msg += " , B1: ";
         msg += _radioData.b1;
-        msg += " | Y1:";
-        msg += _radioData.x1;
+        msg += " | X2:";
+        msg += _radioData.x2;
         msg += "Y2:";
         msg += _radioData.y2;
         msg += " , B2: ";
