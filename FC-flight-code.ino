@@ -27,6 +27,7 @@ struct RadioAckPacket {
   uint32_t rr;
   uint32_t fl;
   uint32_t rl;
+  uint8_t f_status;
 };
 
 RF24 radio(PIN_RADIO_CE, PIN_RADIO_CSN);   // nRF24L01 (CE, CSN)
@@ -555,6 +556,7 @@ void interruptFunction() {
      _radioAckData.rr = esc_2;
      _radioAckData.fl = esc_4;
      _radioAckData.rl = esc_3;
+     _radioAckData.f_status = start;
 
      radio.writeAckPayload(1, &_radioAckData, sizeof(_radioAckData));
  }
