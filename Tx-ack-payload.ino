@@ -54,11 +54,6 @@ void setup()
   pinMode(VRy2, INPUT);
   pinMode(SW2, INPUT_PULLUP); 
 
-  PCICR |= (1 << PCIE1);                                                                // set PCIE0 to enable PCMSK0 scan.
-  PCMSK1 |= (1 << PCINT8);
-  PCMSK1 |= (1 << PCINT9);
-  PCMSK1 |= (1 << PCINT10);
-  PCMSK1 |= (1 << PCINT11);
 }
 
 void loop() {
