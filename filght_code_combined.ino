@@ -207,13 +207,6 @@ void loop(){
     receiver_input_channel_2 = convert_receiver_channel(2);                 //Convert the actual receiver signals for roll to the standard 1000 - 2000us.
     receiver_input_channel_3 = convert_receiver_channel(3);                 //Convert the actual receiver signals for throttle to the standard 1000 - 2000us.
     receiver_input_channel_4 = convert_receiver_channel(4);                 //Convert the actual receiver signals for yaw to the standard 1000 - 2000us.
-   
-
-    Serial.println("");
-    Serial.print(receiver_input_channel_3);
-    Serial.print(" | ");
-    Serial.print(receiver_input_channel_4);
-    Serial.println("");
     
        //For starting the motors: throttle low and yaw left (step 1).
   if(receiver_input_channel_3 < 1050 && receiver_input_channel_4 < 1050)start = 1;
@@ -302,20 +295,6 @@ void loop(){
     esc_4 = 1000;                                                           //If start is not 2 keep a 1000us pulse for ess-4.
   }
 
-//  Serial.println(" ");
-//  Serial.println("start : ");
-//  Serial.print(start);
-//  Serial.print("  |  esc_1 : ");
-//  Serial.print(esc_1);
-//  Serial.print("  |  esc_2 : ");
-//  Serial.print(esc_2);  
-//  Serial.print("  |  esc_3 : ");
-//  Serial.print(esc_3); 
-//  Serial.print("  |  esc_4 : ");
-//  Serial.print(esc_4);
-//  Serial.println(" ");
-
-
 }
 
 void calculate_pid(){
@@ -329,11 +308,28 @@ void calculate_pid(){
       pid_i_mem_roll = 0;
    }
     
-  pid_output_roll = pid_p_gain_roll * pid_error_temp + pid_i_mem_roll + pid_d_gain_roll * (pid_error_temp - pid_last_roll_d_error);
+  pid_output_roll = pid_p_gain_roll * pid_error_temp + pid_i_mem_roll + pid_d_gain_roll * ((pid_error_temp - pid_last_roll_d_error)/elapsedTime);
   if(pid_output_roll > pid_max_roll)pid_output_roll = pid_max_roll;
   else if(pid_output_roll < pid_max_roll * -1)pid_output_roll = pid_max_roll * -1;
 
   pid_last_roll_d_error = pid_error_temp;
+
+  
+    Serial.println("");
+    Serial.print(gyro_roll_input);
+    Serial.print(" | ");
+    Serial.print(pid_roll_setpoint);
+    Serial.print(" | ");
+    Serial.print(pid_last_roll_d_error);
+    Serial.print(" | ");
+    Serial.print(pid_p_gain_roll * pid_error_temp);
+    Serial.print(" | ");
+    Serial.print(pid_i_mem_roll);
+    Serial.print(" | ");
+    Serial.print(pid_d_gain_roll * (pid_error_temp - pid_last_roll_d_error));
+    Serial.print(" | ");
+    Serial.print(pid_output_roll);
+    Serial.println("");
 
   //Pitch calculations
   pid_error_temp = gyro_pitch_input - pid_pitch_setpoint;
@@ -345,7 +341,7 @@ void calculate_pid(){
       pid_i_mem_pitch = 0;
    }
     
-  pid_output_pitch = pid_p_gain_pitch * pid_error_temp + pid_i_mem_pitch + pid_d_gain_pitch * (pid_error_temp - pid_last_pitch_d_error);
+  pid_output_pitch = pid_p_gain_pitch * pid_error_temp + pid_i_mem_pitch + pid_d_gain_pitch * ((pid_error_temp - pid_last_pitch_d_error)/elapsedTime);
   if(pid_output_pitch > pid_max_pitch)pid_output_pitch = pid_max_pitch;
   else if(pid_output_pitch < pid_max_pitch * -1)pid_output_pitch = pid_max_pitch * -1;
 
@@ -361,12 +357,11 @@ void calculate_pid(){
       pid_i_mem_yaw = 0;
    }
     
-  pid_output_yaw = pid_p_gain_yaw * pid_error_temp + pid_i_mem_yaw + pid_d_gain_yaw * (pid_error_temp - pid_last_yaw_d_error);
+  pid_output_yaw = pid_p_gain_yaw * pid_error_temp + pid_i_mem_yaw + pid_d_gain_yaw * ((pid_error_temp - pid_last_yaw_d_error)/elapsedTime);
   if(pid_output_yaw > pid_max_yaw)pid_output_yaw = pid_max_yaw;
   else if(pid_output_yaw < pid_max_yaw * -1)pid_output_yaw = pid_max_yaw * -1;
 
   pid_last_yaw_d_error = pid_error_temp;
-
 
 }
 
